@@ -8,16 +8,24 @@ Clone the project
   git clone ...
 ```
 
+Create a virtual environment for the project
+
+```bash
+  virtualenv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+```
+
+Set the environment variable TOKEN
+
+```bash
+  export TOKEN=...
+```
+
 Go to the project directory
 
 ```bash
   cd DeadlineController
-```
-
-Create file "token.txt" and put your bot token there
-
-```bash
-  touch token.txt && echo "token" > token.txt
 ```
 
 Run the project

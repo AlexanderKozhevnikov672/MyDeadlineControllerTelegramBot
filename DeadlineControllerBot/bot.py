@@ -1,12 +1,16 @@
 import datetime
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from deadlineUser import DeadlineUser, Event
 
 DEFAULT_EARLIEST = 5
-TOKEN = None
-with open("token.txt") as f:
-    TOKEN = f.read().strip()
+TOKEN = os.getenv('TOKEN')
+COMMAND_ARGS_CNT = {'addDeadline': 5, 'delDeadline': 2, 'earliest': 2,
+                    'changeDate': 5, 'changeName': 3, 'today': 1,
+                    'getNames': 4, 'getDate': 2, 'clear': 1, 'delPast': 1,
+                    'getId': 1, 'subscribe': 2, 'unsubscribe': 2,
+                    'sendDeadline': 6, 'forget': 1, 'start': 1}
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot=bot)
@@ -22,7 +26,7 @@ async def start(message: types.Message):
     userId = message.from_user.id
     userFullName = message.from_user.full_name
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['start']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     if args[0] == '/start':
@@ -87,7 +91,7 @@ def eventsToAnswer(events):
 async def commandAddDeadline(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 5:
+    if len(args) != COMMAND_ARGS_CNT['addDeadline']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     eventName = args[1]
@@ -107,7 +111,7 @@ async def commandAddDeadline(message: types.Message):
 async def commandDelDeadline(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 2:
+    if len(args) != COMMAND_ARGS_CNT['delDeadline']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     eventName = args[1]
@@ -123,10 +127,10 @@ async def commandDelDeadline(message: types.Message):
 async def commandEarliest(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) > 2:
+    if len(args) > COMMAND_ARGS_CNT['earliest']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
-    if len(args) == 2:
+    if len(args) == COMMAND_ARGS_CNT['earliest']:
         earliestNum = args[1]
         if not earliestNum.isdigit() or int(earliestNum) <= 0:
             await bot.send_message(userId,
@@ -144,7 +148,7 @@ async def commandEarliest(message: types.Message):
 async def commandChangeDate(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 5:
+    if len(args) != COMMAND_ARGS_CNT['changeDate']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     eventName = args[1]
@@ -164,7 +168,7 @@ async def commandChangeDate(message: types.Message):
 async def commandChangeName(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 3:
+    if len(args) != COMMAND_ARGS_CNT['changeName']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     eventOldName = args[1]
@@ -184,7 +188,7 @@ async def commandChangeName(message: types.Message):
 async def commandToday(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['today']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     initDeadlineUser(userId)
@@ -197,7 +201,7 @@ async def commandToday(message: types.Message):
 async def commandGetNames(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 4:
+    if len(args) != COMMAND_ARGS_CNT['getNames']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     date = getEventDate(args[1:])
@@ -213,7 +217,7 @@ async def commandGetNames(message: types.Message):
 async def commandGetDate(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 2:
+    if len(args) != COMMAND_ARGS_CNT['getDate']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     name = args[1]
@@ -229,7 +233,7 @@ async def commandGetDate(message: types.Message):
 async def commandClear(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['clear']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     initDeadlineUser(userId)
@@ -241,7 +245,7 @@ async def commandClear(message: types.Message):
 async def commandDelPast(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['delPast']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     initDeadlineUser(userId)
@@ -254,7 +258,7 @@ async def commandDelPast(message: types.Message):
 async def commandGetId(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['getId']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     await bot.send_message(userId, str(userId))
@@ -264,7 +268,7 @@ async def commandGetId(message: types.Message):
 async def commandSubscribe(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 2:
+    if len(args) != COMMAND_ARGS_CNT['subscribe']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     subscriptionId = args[1]
@@ -294,7 +298,7 @@ async def commandSubscribe(message: types.Message):
 async def commandUnsubscribe(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 2:
+    if len(args) != COMMAND_ARGS_CNT['unsubscribe']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     subscriptionId = args[1]
@@ -325,7 +329,7 @@ async def commandUnsubscribe(message: types.Message):
 async def commandSendDeadline(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 6:
+    if len(args) != COMMAND_ARGS_CNT['sendDeadline']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     subscriberId = args[1]
@@ -365,7 +369,7 @@ async def commandSendDeadline(message: types.Message):
 async def commandForget(message: types.Message):
     userId = message.from_user.id
     args = message.text.split()
-    if len(args) != 1:
+    if len(args) != COMMAND_ARGS_CNT['forget']:
         await bot.send_message(userId, "Wrong number of command args!")
         return
     dataBase.pop(userId, None)
